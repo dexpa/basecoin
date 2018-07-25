@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/types"
 	crypto "github.com/tendermint/go-crypto"
 	eyescli "github.com/tendermint/merkleeyes/client"
 	cmn "github.com/tendermint/tmlibs/common"

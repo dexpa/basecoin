@@ -5,8 +5,8 @@ import (
 	cmn "github.com/tendermint/tmlibs/common"
 	"github.com/tendermint/tmlibs/events"
 
-	"github.com/tendermint/basecoin/plugins/ibc"
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/plugins/ibc"
+	"github.com/dexpa/basecoin/types"
 )
 
 // If the tx is invalid, a TMSP error will be returned.

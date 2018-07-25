@@ -8,8 +8,8 @@ import (
 	abci "github.com/tendermint/abci/types"
 	"github.com/tendermint/tmlibs/log"
 
-	"github.com/tendermint/basecoin/plugins/ibc"
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/plugins/ibc"
+	"github.com/dexpa/basecoin/types"
 )
 
 //--------------------------------------------------------

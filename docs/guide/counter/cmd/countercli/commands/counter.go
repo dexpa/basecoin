@@ -7,9 +7,9 @@ import (
 	wire "github.com/tendermint/go-wire"
 	txcmd "github.com/tendermint/light-client/commands/txs"
 
-	bcmd "github.com/tendermint/basecoin/cmd/basecli/commands"
-	"github.com/tendermint/basecoin/docs/guide/counter/plugins/counter"
-	btypes "github.com/tendermint/basecoin/types"
+	bcmd "github.com/dexpa/basecoin/cmd/basecli/commands"
+	"github.com/dexpa/basecoin/docs/guide/counter/plugins/counter"
+	btypes "github.com/dexpa/basecoin/types"
 )
 
 //CounterTxCmd is the CLI command to execute the counter

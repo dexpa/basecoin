@@ -16,7 +16,7 @@ dist:
 	@bash scripts/dist.sh
 	@bash scripts/publish.sh
 
-test: test_unit test_cli test_tutorial
+test: test_unit test_cli
 
 test_unit:
 	go test `glide novendor`
@@ -29,27 +29,13 @@ test_cli: tests/cli/shunit2
 	@./tests/cli/restart.sh
 	@./tests/cli/ibc.sh
 
-test_tutorial: docs/guide/shunit2
-	shelldown ${TUTORIALS}
-	for script in docs/guide/*.sh ; do \
-		bash $$script ; \
-	done
-
-tests/cli/shunit2:
-	wget "https://raw.githubusercontent.com/kward/shunit2/master/source/2.1/src/shunit2" \
-    	-q -O tests/cli/shunit2
-
-docs/guide/shunit2:
-	wget "https://raw.githubusercontent.com/kward/shunit2/master/source/2.1/src/shunit2" \
-    	-q -O docs/guide/shunit2
-
 get_vendor_deps: tools
 	glide install
 
 build-docker:
-	docker run -it --rm -v "$(PWD):/go/src/github.com/tendermint/basecoin" -w \
-		"/go/src/github.com/tendermint/basecoin" -e "CGO_ENABLED=0" golang:alpine go build ./cmd/basecoin
-	docker build -t "tendermint/basecoin" .
+	docker run -it --rm -v "$(PWD):/go/src/github.com/dexpa/basecoin" -w \
+		"/go/src/github.com/dexpa/basecoin" -e "CGO_ENABLED=0" golang:alpine go build ./cmd/basecoin
+	docker build -t "dexpa/basecoin" .
 
 tools:
 	@go get $(GOTOOLS)

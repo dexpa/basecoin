@@ -12,7 +12,7 @@ cd "$DIR"
 # Get the git commit
 GIT_COMMIT="$(git rev-parse --short HEAD)"
 GIT_DESCRIBE="$(git describe --tags --always)"
-GIT_IMPORT="github.com/tendermint/basecoin/version"
+GIT_IMPORT="github.com/dexpa/basecoin/version"
 
 # Determine the arch/os combos we're building for
 XC_ARCH=${XC_ARCH:-"386 amd64 arm"}
@@ -33,7 +33,7 @@ echo "==> Building basecoin..."
 		-ldflags "-X ${GIT_IMPORT}.GitCommit='${GIT_COMMIT}' -X ${GIT_IMPORT}.GitDescribe='${GIT_DESCRIBE}'" \
 		-output "build/pkg/{{.OS}}_{{.Arch}}/basecoin" \
 		-tags="${BUILD_TAGS}" \
-		github.com/tendermint/basecoin/cmd/basecoin
+		github.com/dexpa/basecoin/cmd/basecoin
 
 echo "==> Building basecli..."
 "$(which gox)" \
@@ -43,7 +43,7 @@ echo "==> Building basecli..."
     -ldflags "-X ${GIT_IMPORT}.GitCommit='${GIT_COMMIT}' -X ${GIT_IMPORT}.GitDescribe='${GIT_DESCRIBE}'" \
     -output "build/pkg/{{.OS}}_{{.Arch}}/basecli" \
     -tags="${BUILD_TAGS}" \
-    github.com/tendermint/basecoin/cmd/basecli
+    github.com/dexpa/basecoin/cmd/basecli
 
 # Zip all the files.
 echo "==> Packaging..."

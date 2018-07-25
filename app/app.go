@@ -11,9 +11,9 @@ import (
 	cmn "github.com/tendermint/tmlibs/common"
 	"github.com/tendermint/tmlibs/log"
 
-	sm "github.com/tendermint/basecoin/state"
-	"github.com/tendermint/basecoin/types"
-	"github.com/tendermint/basecoin/version"
+	sm "github.com/dexpa/basecoin/state"
+	"github.com/dexpa/basecoin/types"
+	"github.com/dexpa/basecoin/version"
 )
 
 const (

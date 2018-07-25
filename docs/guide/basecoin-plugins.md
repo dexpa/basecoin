@@ -245,7 +245,7 @@ which we expect to be encoded in the `AppTx.Data`, and thus to be decoded in
 the `RunTx` method, and used to update the plugin state.
 
 For more examples and inspiration, see our [repository of example
-plugins](https://github.com/tendermint/basecoin-examples).
+plugins](https://github.com/dexpa/basecoin-examples).
 
 ## Conclusion
 

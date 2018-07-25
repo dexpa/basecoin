@@ -14,8 +14,8 @@ import (
 	"github.com/tendermint/light-client/commands/txs"
 	"github.com/tendermint/tmlibs/cli"
 
-	bcmd "github.com/tendermint/basecoin/cmd/basecli/commands"
-	coincmd "github.com/tendermint/basecoin/cmd/basecoin/commands"
+	bcmd "github.com/dexpa/basecoin/cmd/basecli/commands"
+	coincmd "github.com/dexpa/basecoin/cmd/basecoin/commands"
 )
 
 // BaseCli represents the base command when called without any subcommands

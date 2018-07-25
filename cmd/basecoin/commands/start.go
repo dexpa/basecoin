@@ -20,7 +20,7 @@ import (
 	"github.com/tendermint/tendermint/proxy"
 	"github.com/tendermint/tendermint/types"
 
-	"github.com/tendermint/basecoin/app"
+	"github.com/dexpa/basecoin/app"
 )
 
 var StartCmd = &cobra.Command{

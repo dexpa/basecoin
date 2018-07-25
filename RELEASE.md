@@ -50,7 +50,7 @@ Once QA passes, we need to orchestrate the release.
 * Merge to master
 * Set all glide dependencies to proper master versions of repos
 * Push code with new version tag
-* Link CHANGELOG to the [github release](https://github.com/tendermint/basecoin/releases)
+* Link CHANGELOG to the [github release](https://github.com/dexpa/basecoin/releases)
 * Package up new version as binaries (and upload to s3)
 * Upgrade our public-facing testnets with the latest versions
 * Release blog post

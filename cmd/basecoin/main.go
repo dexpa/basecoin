@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/tendermint/basecoin/cmd/basecoin/commands"
+	"github.com/dexpa/basecoin/cmd/basecoin/commands"
 	"github.com/tendermint/tmlibs/cli"
 )
 

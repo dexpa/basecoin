@@ -14,7 +14,7 @@ import (
 	merkle "github.com/tendermint/merkleeyes/iavl"
 	cmn "github.com/tendermint/tmlibs/common"
 
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/types"
 	tm "github.com/tendermint/tendermint/types"
 )
 

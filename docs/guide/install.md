@@ -7,7 +7,7 @@ page to get a pre-compiled binary for your platform.
 On a good day, basecoin can be installed like a normal Go program:
 
 ```
-go get -u github.com/tendermint/basecoin/cmd/...
+go get -u github.com/dexpa/basecoin/cmd/...
 ```
 
 In some cases, if that fails, or if another branch is required,
@@ -16,7 +16,7 @@ Thus, assuming you've already run `go get` or otherwise cloned the repo,
 the correct way to install is:
 
 ```
-cd $GOPATH/src/github.com/tendermint/basecoin
+cd $GOPATH/src/github.com/dexpa/basecoin
 git pull origin master
 make all
 ```

@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/tendermint/basecoin/version"
+	"github.com/dexpa/basecoin/version"
 )
 
 var VersionCmd = &cobra.Command{

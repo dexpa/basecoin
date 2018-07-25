@@ -2,7 +2,7 @@ package state
 
 import (
 	abci "github.com/tendermint/abci/types"
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/types"
 	eyes "github.com/tendermint/merkleeyes/client"
 	"github.com/tendermint/tmlibs/log"
 )

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/types"
 	eyes "github.com/tendermint/merkleeyes/client"
 	"github.com/tendermint/tmlibs/log"
 

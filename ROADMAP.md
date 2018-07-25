@@ -12,7 +12,7 @@ Patch release here involve improving the usability of the cli tools, adding subc
 
 **Breaking changes**
 
-* Renaming likely: this release may well lead to a [renaming of the repository](https://github.com/tendermint/basecoin/issues/119) to emphasize that it is a generalized framework.  `basecoin` and `basecli` executables will remain with generally unchanged usage.
+* Renaming likely: this release may well lead to a [renaming of the repository](https://github.com/dexpa/basecoin/issues/119) to emphasize that it is a generalized framework.  `basecoin` and `basecli` executables will remain with generally unchanged usage.
 * This will also provide a tx structure that is very different than the current one, and a non-trivial upgrade of running chains.
 
 The next release cycle involves a big upgrade to the core, especially how one can write modules (aka plugins) as well as configure a basecoin-based executable.  The main goal is to leave us with basecoin as a single executable with a similar API, but create a new module/middleware system with a number of standard modules provided (and easy addition of third party modules), so developers can quickly mix-and-match pieces and add custom business logic for there chain.
@@ -42,7 +42,7 @@ Further, when the planned enhancements to real-time events happen in tendermint 
 
 ### 0.9.x??? - Proof of Stake and Voting Modules
 
-We should integrate developments on a [proof-of-stake module](https://github.com/tendermint/basecoin-stake) (currently a work-in-progress) and basic voting modules (currently planned) into properly supported for modules.  These would provide the basis for dynamic validator set changes with bondign periods, and the basis for making governance decisions (eg. voting to change the block reward).
+We should integrate developments on a [proof-of-stake module](https://github.com/dexpa/basecoin-stake) (currently a work-in-progress) and basic voting modules (currently planned) into properly supported for modules.  These would provide the basis for dynamic validator set changes with bondign periods, and the basis for making governance decisions (eg. voting to change the block reward).
 
 At this point we would have to give full support to these plugins, and third-party devs can build on them to add more complex delegation or governance logic.
 

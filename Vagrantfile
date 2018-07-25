@@ -29,10 +29,10 @@ Vagrant.configure("2") do |config|
     echo 'export LC_ALL=en_US.UTF-8' >> /home/vagrant/.bash_profile
 
     mkdir -p /home/vagrant/go/src/github.com/tendermint
-    ln -s /vagrant /home/vagrant/go/src/github.com/tendermint/basecoin
+    ln -s /vagrant /home/vagrant/go/src/github.com/dexpa/basecoin
 
     chown -R vagrant:vagrant /home/vagrant/go
 
-    rm -rf /home/vagrant/go/src/github.com/tendermint/basecoin/vendor
+    rm -rf /home/vagrant/go/src/github.com/dexpa/basecoin/vendor
   SHELL
 end

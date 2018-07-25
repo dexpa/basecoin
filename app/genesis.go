@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/tendermint/basecoin/types"
+	"github.com/dexpa/basecoin/types"
 	crypto "github.com/tendermint/go-crypto"
 	"github.com/tendermint/go-wire/data"
 	cmn "github.com/tendermint/tmlibs/common"

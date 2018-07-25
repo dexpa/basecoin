@@ -71,7 +71,7 @@ and what is happening under the hood.
 Installing Basecoin is simple:
 
 ```shelldown[0]
-go get -u github.com/tendermint/basecoin/cmd/...
+go get -u github.com/dexpa/basecoin/cmd/...
 ```
 
 If you have trouble, see the [installation guide](install.md).

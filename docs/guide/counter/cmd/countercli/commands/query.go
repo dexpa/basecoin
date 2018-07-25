@@ -5,7 +5,7 @@ import (
 
 	proofcmd "github.com/tendermint/light-client/commands/proofs"
 
-	"github.com/tendermint/basecoin/docs/guide/counter/plugins/counter"
+	"github.com/dexpa/basecoin/docs/guide/counter/plugins/counter"
 )
 
 //CounterQueryCmd CLI command to query the counter state

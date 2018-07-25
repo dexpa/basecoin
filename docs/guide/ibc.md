@@ -8,7 +8,7 @@ use it to send tokens across blockchains!
 Please note, this tutorial assumes you are familiar with [Basecoin
 plugins](/docs/guide/basecoin-plugins.md), but we'll explain how IBC works. You
 may also want to see [our repository of example
-plugins](https://github.com/tendermint/basecoin-examples).
+plugins](https://github.com/dexpa/basecoin-examples).
 
 The IBC plugin defines a new set of transactions as subtypes of the `AppTx`.
 The plugin's functionality is accessed by setting the `AppTx.Name` field to

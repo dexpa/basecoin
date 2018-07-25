@@ -30,8 +30,8 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 ```
 
-Now, when you run `go get github.com/tendermint/basecoin`, this will create the
-directory `$GOPATH/src/github.com/tendermint/basecoin`, checkout the master
+Now, when you run `go get github.com/dexpa/basecoin`, this will create the
+directory `$GOPATH/src/github.com/dexpa/basecoin`, checkout the master
 branch with git, and try to compile if there are any scripts.  All your repos
 will fit under GOPATH with a similar logic.  Just pick good names for your
 github repos. If you put your code outside of GOPATH/src or have a path other
@@ -56,8 +56,8 @@ to note is all programs compiles with `go install` and end up in `$GOPATH/bin`.
 mainly a library that also export (one or more) commands, in these cases there
 is a subdir called `cmd`, with a different subdir for each command, using the
 command name as the directory name.  To compile these commands, you can go
-something like `go install github.com/tendermint/basecoin/cmd/basecoin` or to
-compile all the commands `go install github.com/tendermint/basecoin/cmd/...`
+something like `go install github.com/dexpa/basecoin/cmd/basecoin` or to
+compile all the commands `go install github.com/dexpa/basecoin/cmd/...`
 (... is a go tooling shortcut for all subdirs, like `*`).
 
 ## Dependencies
