@@ -40,7 +40,7 @@ func init() {
 	flags := SendTxCmd.Flags()
 	flags.String(FlagTo, "", "Destination address for the bits")
 	flags.String(FlagAmount, "", "Coins to send in the format <amt><coin>,<amt><coin>...")
-	flags.String(FlagFee, "0mycoin", "Coins for the transaction fee of the format <amt><coin>")
+	flags.String(FlagFee, "0CLR", "Coins for the transaction fee of the format <amt><coin>")
 	flags.Int64(FlagGas, 0, "Amount of gas for this transaction")
 	flags.Int(FlagSequence, -1, "Sequence number for this transaction")
 }

@@ -1,4 +1,4 @@
-package: github.com/dexpa/basecoin
+package: github.com/tendermint/basecoin
 import:
 - package: github.com/gorilla/websocket
 - package: github.com/pkg/errors

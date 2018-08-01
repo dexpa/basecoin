@@ -64,11 +64,12 @@ func (p *TxS) UnmarshalJSON(data []byte) (err error) {
 //-----------------------------------------------------------------------------
 
 type TxInput struct {
-	Address   data.Bytes       `json:"address"`   // Hash of the PubKey
-	Coins     Coins            `json:"coins"`     //
-	Sequence  int              `json:"sequence"`  // Must be 1 greater than the last committed TxInput
-	Signature crypto.Signature `json:"signature"` // Depends on the PubKey type and the whole Tx
-	PubKey    crypto.PubKey    `json:"pub_key"`   // Is present iff Sequence == 0
+	Address  	data.Bytes       `json:"address"`   // Hash of the PubKey
+	Coins     	Coins            `json:"coins"`     //
+	Sequence  	int              `json:"sequence"`  // Must be 1 greater than the last committed TxInput
+	Signature 	crypto.Signature `json:"signature"` // Depends on the PubKey type and the whole Tx
+	PubKey    	crypto.PubKey    `json:"pub_key"`   // Is present iff Sequence == 0
+	//Color 		string			 `json:"color"`
 }
 
 func (txIn TxInput) ValidateBasic() abci.Result {
@@ -94,14 +95,15 @@ func (txIn TxInput) ValidateBasic() abci.Result {
 }
 
 func (txIn TxInput) String() string {
-	return Fmt("TxInput{%X,%v,%v,%v,%v}", txIn.Address, txIn.Coins, txIn.Sequence, txIn.Signature, txIn.PubKey)
+	return Fmt("TxInput{%X,%v,%v, %v, %v}", txIn.Address, txIn.Coins, txIn.Sequence, txIn.Signature, txIn.PubKey)
 }
 
 func NewTxInput(pubKey crypto.PubKey, coins Coins, sequence int) TxInput {
 	input := TxInput{
-		Address:  pubKey.Address(),
-		Coins:    coins,
-		Sequence: sequence,
+		Address:  	pubKey.Address(),
+		Coins:    	coins,
+		Sequence: 	sequence,
+		//Color:		"grey",
 	}
 	if sequence == 1 {
 		input.PubKey = pubKey
@@ -112,8 +114,9 @@ func NewTxInput(pubKey crypto.PubKey, coins Coins, sequence int) TxInput {
 //-----------------------------------------------------------------------------
 
 type TxOutput struct {
-	Address data.Bytes `json:"address"` // Hash of the PubKey
-	Coins   Coins      `json:"coins"`   //
+	Address 	data.Bytes 	`json:"address"` // Hash of the PubKey
+	Coins  		Coins      	`json:"coins"`   //
+	//Color 		string		`json:"color"`
 }
 
 // An output destined for another chain may be formatted as `chainID/address`.

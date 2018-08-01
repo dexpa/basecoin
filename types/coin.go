@@ -11,19 +11,20 @@ import (
 )
 
 type Coin struct {
-	Denom  string `json:"denom"`
-	Amount int64  `json:"amount"`
+	Denom  	string `json:"denom"`
+	Amount 	int64  `json:"amount"`
+	Tag		string `json:"tag"`
 }
 
 func (coin Coin) String() string {
-	return fmt.Sprintf("%v%v", coin.Amount, coin.Denom)
+	return fmt.Sprintf("%v%v %v",coin.Amount, coin.Denom, coin.Tag)
 }
 
 //regex codes for extracting coins from string
 var reDenom = regexp.MustCompile("")
 var reAmt = regexp.MustCompile("(\\d+)")
 
-var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alpha:]]+)$")
+var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alpha:]]+)[[:space:]]*([[:alpha:]]*)$")
 
 func ParseCoin(str string) (Coin, error) {
 	var coin Coin
@@ -38,8 +39,12 @@ func ParseCoin(str string) (Coin, error) {
 	if err != nil {
 		return coin, err
 	}
+	if len(matches[3])>0 {
+		coin = Coin{matches[2], int64(amt), matches[3]}
+	} else {
+		coin = Coin{matches[2], int64(amt), "grey"}
+	}
 
-	coin = Coin{matches[2], int64(amt)}
 	return coin, nil
 }
 
@@ -125,7 +130,7 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 			return append(sum, coinsA[indexA:]...)
 		}
 		coinA, coinB := coinsA[indexA], coinsB[indexB]
-		switch strings.Compare(coinA.Denom, coinB.Denom) {
+		switch strings.Compare(coinA.Tag, coinB.Tag) {
 		case -1:
 			sum = append(sum, coinA)
 			indexA += 1
@@ -134,7 +139,7 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 				// ignore 0 sum coin type
 			} else {
 				sum = append(sum, Coin{
-					Denom:  coinA.Denom,
+					Tag:  coinA.Tag,
 					Amount: coinA.Amount + coinB.Amount,
 				})
 			}
@@ -152,7 +157,7 @@ func (coins Coins) Negative() Coins {
 	res := make([]Coin, 0, len(coins))
 	for _, coin := range coins {
 		res = append(res, Coin{
-			Denom:  coin.Denom,
+			Tag:  coin.Tag,
 			Amount: -coin.Amount,
 		})
 	}

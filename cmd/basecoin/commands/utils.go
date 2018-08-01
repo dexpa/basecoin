@@ -32,6 +32,17 @@ type Flag2Register struct {
 	Desc    string
 }
 
+const (
+	ChainFlag = "chain-id"
+	NodeFlag  = "node"
+)
+
+// AddBasicFlags adds --node and --chain-id, which we need for everything
+func AddBasicFlags(cmd *cobra.Command) {
+	cmd.PersistentFlags().String(ChainFlag, "", "Chain ID of tendermint node")
+	cmd.PersistentFlags().String(NodeFlag, "", "<host>:<port> to tendermint rpc interface for this chain")
+}
+
 //register flag utils
 func RegisterFlags(c *cobra.Command, flags []Flag2Register) {
 	registerFlags(c, flags, false)

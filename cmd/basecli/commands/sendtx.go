@@ -95,6 +95,13 @@ func (s *SendTx) ValidateBasic() error {
 		if in.Sequence <= 0 {
 			return errors.New("Sequence must be greater than 0")
 		}
+		/*if in.Color == "grey" {
+			errors.New("Boring grey coin transacting using regular client")
+		} else {
+			for _, out := range s.Tx.Outputs {
+				out.Color = in.Color
+			}
+		}*/
 	}
 	for _, out := range s.Tx.Outputs {
 		// we now allow chain/addr, so it can be more than 20 bytes

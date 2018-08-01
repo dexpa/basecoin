@@ -253,7 +253,7 @@ func (r *relayer) appTx(ibcTx ibc.IBCTx) error {
 		ibc.IBCTx `json:"unwrap"`
 	}{ibcTx}))
 
-	smallCoins := types.Coin{"mycoin", 1}
+	smallCoins := types.Coin{"test", 1, "grey"}
 
 	input := types.NewTxInput(r.privKey.PubKey, types.Coins{smallCoins}, sequence)
 	tx := &types.AppTx{
