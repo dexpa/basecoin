@@ -28,6 +28,7 @@ func (app *Basecoin) LoadGenesis(path string) error {
 			return err
 		}
 		r := app.SetOption("base/account", string(accBytes))
+		app.SetOption("base/reserve_address", string(accBytes))
 		// TODO: SetOption returns an error
 		app.logger.Info("Done setting Account via SetOption", "result", r)
 	}

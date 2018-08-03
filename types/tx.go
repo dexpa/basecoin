@@ -166,6 +166,16 @@ type SendTx struct {
 	Outputs []TxOutput `json:"outputs"`
 }
 
+func Filter(obj []TxInput, t string) []string {
+	var result []string // == nil
+	if t == "address" {
+		for _, v := range obj {
+			result = append(result, v.Address.String())
+			}
+	}
+	return result
+}
+
 func (tx *SendTx) SignBytes(chainID string) []byte {
 	signBytes := wire.BinaryBytes(chainID)
 	sigz := make([]crypto.Signature, len(tx.Inputs))

@@ -7,7 +7,18 @@ import (
 
 	"github.com/dexpa/basecoin/plugins/ibc"
 	"github.com/dexpa/basecoin/types"
+	"fmt"
 )
+
+func contains(slice []string, item string) bool {
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
 
 // If the tx is invalid, a TMSP error will be returned.
 func ExecTx(state *State, pgz *types.Plugins, tx types.Tx, isCheckTx bool, evc events.Fireable) abci.Result {
@@ -25,6 +36,14 @@ func ExecTx(state *State, pgz *types.Plugins, tx types.Tx, isCheckTx bool, evc e
 		if res.IsErr() {
 			return res.PrependLog("in validateOutputsBasic()")
 		}
+
+
+		// Reserve address functionality
+		reserveAddress := state.GetReserveAddress()
+		inputAddr:=types.Filter(tx.Inputs, "address")
+		fmt.Println(inputAddr)
+		if contains(inputAddr, reserveAddress){fmt.Println("FOUND IN INPUTS RESERVE ADDRESS")}
+
 
 		// Get inputs
 		accounts, res := getInputs(state, tx.Inputs)

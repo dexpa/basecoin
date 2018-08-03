@@ -1,29 +1,31 @@
 package state
 
 import (
-	abci "github.com/tendermint/abci/types"
 	"github.com/dexpa/basecoin/types"
-	eyes "github.com/tendermint/merkleeyes/client"
 	"github.com/tendermint/tmlibs/log"
+	abci "github.com/tendermint/abci/types"
+	"github.com/tendermint/merkleeyes/client"
 )
 
 // CONTRACT: State should be quick to copy.
 // See CacheWrap().
 type State struct {
-	chainID    string
-	store      types.KVStore
-	readCache  map[string][]byte // optional, for caching writes to store
-	writeCache *types.KVCache    // optional, for caching writes w/o writing to store
-	logger     log.Logger
+	chainID    			string
+	reserveAddress		string
+	store      			types.KVStore
+	readCache  			map[string][]byte // optional, for caching writes to store
+	writeCache 			*types.KVCache    // optional, for caching writes w/o writing to store
+	logger     			log.Logger
 }
 
 func NewState(store types.KVStore) *State {
 	return &State{
-		chainID:    "",
-		store:      store,
-		readCache:  make(map[string][]byte),
-		writeCache: nil,
-		logger:     log.NewNopLogger(),
+		chainID:    	"",
+		reserveAddress: "",
+		store:      	store,
+		readCache:  	make(map[string][]byte),
+		writeCache: 	nil,
+		logger:     	log.NewNopLogger(),
 	}
 }
 
@@ -42,6 +44,19 @@ func (s *State) GetChainID() string {
 	}
 	s.chainID = string(s.store.Get([]byte("base/chain_id")))
 	return s.chainID
+}
+
+func (s *State) SetReserveAddress(address string) {
+	s.reserveAddress = address
+	s.store.Set([]byte("base/reserve_address"), []byte(address))
+}
+
+func (s *State) GetReserveAddress() string {
+	if s.reserveAddress != "" {
+		return s.reserveAddress
+	}
+	s.reserveAddress = string(s.store.Get([]byte("base/reserve_address")))
+	return s.reserveAddress
 }
 
 func (s *State) Get(key []byte) (value []byte) {

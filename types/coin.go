@@ -137,15 +137,9 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 		coinA, coinB := coinsA[indexA], coinsB[indexB]
 		switch strings.Compare(coinA.Tag, coinB.Tag) {
 		case -1:
-			fmt.Println("case -1")
-			fmt.Println(coinA.Tag)
-			fmt.Println(coinB.Tag)
 			sum = append(sum, coinA)
 			indexA += 1
 		case 0:
-			fmt.Println("case -0")
-			fmt.Println(coinA.Tag)
-			fmt.Println(coinB.Tag)
 			if coinA.Amount+coinB.Amount == 0 {
 				// ignore 0 sum coin type
 			} else {
@@ -157,9 +151,6 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 			indexA += 1
 			indexB += 1
 		case 1:
-			fmt.Println("case 1")
-			fmt.Println(coinA.Tag)
-			fmt.Println(coinB.Tag)
 			sum = append(sum, coinB)
 			indexB += 1
 		}

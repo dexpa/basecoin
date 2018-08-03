@@ -85,6 +85,14 @@ func (app *Basecoin) SetOption(key string, value string) string {
 		case "chain_id":
 			app.state.SetChainID(value)
 			return "Success"
+		case "reserve_address":
+			var acc GenesisAccount
+			err := json.Unmarshal([]byte(value), &acc)
+			if err != nil {
+				return "Error decoding acc message: " + err.Error()
+			}
+			app.state.SetReserveAddress(acc.Address.String())
+			return "Success"
 		case "account":
 			var acc GenesisAccount
 			err := json.Unmarshal([]byte(value), &acc)
