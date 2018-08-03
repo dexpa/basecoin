@@ -91,7 +91,7 @@ func (app *Basecoin) SetOption(key string, value string) string {
 			if err != nil {
 				return "Error decoding acc message: " + err.Error()
 			}
-			acc.Balance.Sort()
+			acc.Balance.Sort("amount")
 			addr, err := acc.GetAddr()
 			if err != nil {
 				return "Invalid address: " + err.Error()

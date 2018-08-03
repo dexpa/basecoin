@@ -149,7 +149,7 @@ func BroadcastAppTx(tx *btypes.AppTx) (*ctypes.ResultBroadcastTxCommit, error) {
 // AddAppTxFlags adds flags required by apptx
 func AddAppTxFlags(fs *flag.FlagSet) {
 	fs.String(FlagAmount, "", "Coins to send in the format <amt><coin>,<amt><coin>...")
-	fs.String(FlagFee, "0mycoin", "Coins for the transaction fee of the format <amt><coin>")
+	fs.String(FlagFee, "0CLR", "Coins for the transaction fee of the format <amt><coin>")
 	fs.Int64(FlagGas, 0, "Amount of gas for this transaction")
 	fs.Int(FlagSequence, -1, "Sequence number for this transaction")
 }

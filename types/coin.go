@@ -42,7 +42,7 @@ func ParseCoin(str string) (Coin, error) {
 	if len(matches[3])>0 {
 		coin = Coin{matches[2], int64(amt), matches[3]}
 	} else {
-		coin = Coin{matches[2], int64(amt), "grey"}
+		coin = Coin{matches[2], int64(amt), ""}
 	}
 
 	return coin, nil
@@ -82,7 +82,7 @@ func ParseCoins(str string) (Coins, error) {
 	}
 
 	// ensure they are in proper order, to avoid random failures later
-	coins.Sort()
+	coins.Sort("tag")
 	if !coins.IsValid() {
 		return nil, errors.Errorf("ParseCoins invalid: %#v", coins)
 	}
@@ -117,6 +117,11 @@ func (coins Coins) IsValid() bool {
 // Currently appends an empty coin ...
 func (coinsA Coins) Plus(coinsB Coins) Coins {
 	sum := []Coin{}
+	//current Plus() code implicitly assumes that Coins are sorted
+	//so in same cases original code doesn't work
+	coinsA.Sort("tag")
+	coinsB.Sort("tag")
+	//
 	indexA, indexB := 0, 0
 	lenA, lenB := len(coinsA), len(coinsB)
 	for {
@@ -132,9 +137,15 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 		coinA, coinB := coinsA[indexA], coinsB[indexB]
 		switch strings.Compare(coinA.Tag, coinB.Tag) {
 		case -1:
+			fmt.Println("case -1")
+			fmt.Println(coinA.Tag)
+			fmt.Println(coinB.Tag)
 			sum = append(sum, coinA)
 			indexA += 1
 		case 0:
+			fmt.Println("case -0")
+			fmt.Println(coinA.Tag)
+			fmt.Println(coinB.Tag)
 			if coinA.Amount+coinB.Amount == 0 {
 				// ignore 0 sum coin type
 			} else {
@@ -146,10 +157,14 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 			indexA += 1
 			indexB += 1
 		case 1:
+			fmt.Println("case 1")
+			fmt.Println(coinA.Tag)
+			fmt.Println(coinB.Tag)
 			sum = append(sum, coinB)
 			indexB += 1
 		}
 	}
+	fmt.Println(sum)
 	return sum
 }
 
@@ -157,8 +172,9 @@ func (coins Coins) Negative() Coins {
 	res := make([]Coin, 0, len(coins))
 	for _, coin := range coins {
 		res = append(res, Coin{
-			Tag:  coin.Tag,
+			Denom: coin.Denom,
 			Amount: -coin.Amount,
+			Tag:  coin.Tag,
 		})
 	}
 	return res
@@ -221,4 +237,16 @@ func (coins Coins) IsNonnegative() bool {
 func (c Coins) Len() int           { return len(c) }
 func (c Coins) Less(i, j int) bool { return c[i].Denom < c[j].Denom }
 func (c Coins) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
-func (c Coins) Sort()              { sort.Sort(c) }
+
+func (c Coins) Sort(t string) {
+	if t == "tag" {
+		sort.Slice(c, func(i, j int) bool {
+			return c[i].Tag < c[j].Tag
+		})
+	} else {
+		sort.Slice(c, func(i, j int) bool {
+			return c[i].Amount < c[j].Amount
+		})
+
+	}
+}
