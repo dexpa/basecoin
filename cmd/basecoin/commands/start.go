@@ -66,7 +66,7 @@ func startCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create Basecoin app
-	basecoinApp := app.NewBasecoin(eyesCli)
+	basecoinApp := app.NewBasecoin(eyesCli, true)
 	basecoinApp.SetLogger(logger.With("module", "app"))
 
 	// register IBC plugn

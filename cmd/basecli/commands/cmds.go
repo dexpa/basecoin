@@ -15,6 +15,7 @@ import (
 	cmn "github.com/tendermint/tmlibs/common"
 
 	btypes "github.com/dexpa/basecoin/types"
+	"fmt"
 )
 
 //-------------------------
@@ -66,6 +67,18 @@ func doSendTx(cmd *cobra.Command, args []string) error {
 		Tx:      tx,
 	}
 	send.AddSigner(txcmd.GetSigner())
+
+	var headNode = false
+	if headNode {
+		for i := range send.Tx.Outputs{
+			for j := range send.Tx.Outputs[i].Coins {
+				send.Tx.Outputs[i].Coins[j].Tag = "xxx"
+				fmt.Println("changing tag")
+			}
+		}
+		fmt.Println("changed tag")
+		fmt.Println(send.Tx.Outputs[0].Coins[0].Tag)
+	}
 
 	// Sign if needed and post.  This it the work-horse
 	bres, err := txcmd.SignAndPostTx(send)

@@ -408,14 +408,14 @@ func (sm *IBCStateMachine) runPacketCreateTx(tx IBCPacketCreateTx) {
 		// do nothing
 	case CoinsPayload:
 		// ensure enough coins were sent in tx to cover the payload coins
-		if !sm.ctx.Coins.IsGTE(payload.Coins) {
+		if !sm.ctx.Coins.IsGTE(payload.Coins, 0) {
 			sm.res.Code = abci.CodeType_InsufficientFunds
 			sm.res.Log = fmt.Sprintf("Not enough funds sent in tx (%v) to send %v via IBC", sm.ctx.Coins, payload.Coins)
 			return
 		}
 
 		// deduct coins from context
-		sm.ctx.Coins = sm.ctx.Coins.Minus(payload.Coins)
+		sm.ctx.Coins = sm.ctx.Coins.Minus(payload.Coins, 0)
 	}
 
 	// Save new Packet
@@ -492,7 +492,7 @@ func (sm *IBCStateMachine) runPacketPostTx(tx IBCPacketPostTx) {
 		if acc == nil {
 			acc = &types.Account{}
 		}
-		acc.Balance = acc.Balance.Plus(payload.Coins)
+		acc.Balance = acc.Balance.Plus(payload.Coins, 0)
 		types.SetAccount(sm.store, payload.Address, acc)
 	}
 

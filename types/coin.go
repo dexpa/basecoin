@@ -83,7 +83,7 @@ func ParseCoins(str string) (Coins, error) {
 
 	// ensure they are in proper order, to avoid random failures later
 	coins.Sort("tag")
-	if !coins.IsValid() {
+	if !coins.IsValid(true) {
 		return nil, errors.Errorf("ParseCoins invalid: %#v", coins)
 	}
 
@@ -91,12 +91,20 @@ func ParseCoins(str string) (Coins, error) {
 }
 
 // Must be sorted, and not have 0 amounts
-func (coins Coins) IsValid() bool {
+func (coins Coins) IsValid(checkTag bool) bool {
 	switch len(coins) {
 	case 0:
 		return true
 	case 1:
-		return coins[0].Amount != 0
+		if coins[0].Amount != 0 {
+			if checkTag && coins[0].Tag == "" {
+				return false
+			} else {
+				return true
+			}
+		}else {
+			return false
+		}
 	default:
 		lowDenom := coins[0].Denom
 		for _, coin := range coins[1:] {
@@ -104,6 +112,9 @@ func (coins Coins) IsValid() bool {
 				return false
 			}
 			if coin.Amount == 0 {
+				return false
+			}
+			if checkTag && coin.Tag == "" {
 				return false
 			}
 			// we compare each coin against the last denom
@@ -115,7 +126,7 @@ func (coins Coins) IsValid() bool {
 
 // TODO: handle empty coins!
 // Currently appends an empty coin ...
-func (coinsA Coins) Plus(coinsB Coins) Coins {
+func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 	sum := []Coin{}
 	//current Plus() code implicitly assumes that Coins are sorted
 	//so in same cases original code doesn't work
@@ -124,38 +135,104 @@ func (coinsA Coins) Plus(coinsB Coins) Coins {
 	//
 	indexA, indexB := 0, 0
 	lenA, lenB := len(coinsA), len(coinsB)
-	for {
-		if indexA == lenA {
-			if indexB == lenB {
-				return sum
-			} else {
-				return append(sum, coinsB[indexB:]...)
+	if reserveFlow == 0 {
+		for {
+			if indexA == lenA {
+				if indexB == lenB {
+					return sum
+				} else {
+					return append(sum, coinsB[indexB:]...)
+				}
+			} else if indexB == lenB {
+				return append(sum, coinsA[indexA:]...)
 			}
-		} else if indexB == lenB {
-			return append(sum, coinsA[indexA:]...)
-		}
-		coinA, coinB := coinsA[indexA], coinsB[indexB]
-		switch strings.Compare(coinA.Tag, coinB.Tag) {
-		case -1:
-			sum = append(sum, coinA)
-			indexA += 1
-		case 0:
-			if coinA.Amount+coinB.Amount == 0 {
-				// ignore 0 sum coin type
-			} else {
-				sum = append(sum, Coin{
-					Tag:  coinA.Tag,
-					Amount: coinA.Amount + coinB.Amount,
-				})
+			coinA, coinB := coinsA[indexA], coinsB[indexB]
+			switch strings.Compare(coinA.Tag, coinB.Tag) {
+			case -1:
+				sum = append(sum, coinA)
+				indexA += 1
+			case 0:
+				if coinA.Amount+coinB.Amount == 0 {
+					// ignore 0 sum coin type
+				} else {
+					sum = append(sum, Coin{
+						Tag:    coinA.Tag,
+						Amount: coinA.Amount + coinB.Amount,
+					})
+				}
+				indexA += 1
+				indexB += 1
+			case 1:
+				sum = append(sum, coinB)
+				indexB += 1
 			}
-			indexA += 1
-			indexB += 1
-		case 1:
-			sum = append(sum, coinB)
-			indexB += 1
 		}
-	}
-	fmt.Println(sum)
+		} else if reserveFlow == -1 {
+			for {
+				if indexA == lenA {
+					if indexB == lenB {
+						return sum
+					} else {
+						return append(sum, coinsB[indexB:]...)
+					}
+				} else if indexB == lenB {
+					return append(sum, coinsA[indexA:]...)
+				}
+				coinA, coinB := coinsA[indexA], coinsB[indexB]
+				switch strings.Compare("xxx", coinB.Tag) {
+				case -1:
+					sum = append(sum, coinA)
+					indexA += 1
+				case 0:
+					if coinA.Amount+coinB.Amount == 0 {
+						// ignore 0 sum coin type
+					} else {
+						sum = append(sum, Coin{
+							Tag:    "xxx",
+							Amount: coinA.Amount + coinB.Amount,
+						})
+					}
+					indexA += 1
+					indexB += 1
+				case 1:
+					sum = append(sum, coinB)
+					indexB += 1
+				}
+			}
+		} else if reserveFlow == 1 {
+				for {
+					if indexA == lenA {
+						if indexB == lenB {
+							return sum
+						} else {
+							return append(sum, coinsB[indexB:]...)
+						}
+					} else if indexB == lenB {
+						return append(sum, coinsA[indexA:]...)
+					}
+					coinA, coinB := coinsA[indexA], coinsB[indexB]
+					switch strings.Compare(coinA.Tag, "reserve") {
+					case -1:
+						sum = append(sum, coinA)
+						indexA += 1
+					case 0:
+						if coinA.Amount+coinB.Amount == 0 {
+							// ignore 0 sum coin type
+						} else {
+							sum = append(sum, Coin{
+								Tag:    "reserve",
+								Amount: coinA.Amount + coinB.Amount,
+							})
+						}
+						indexA += 1
+						indexB += 1
+					case 1:
+						sum = append(sum, coinB)
+						indexB += 1
+					}
+				}
+		}
+	//fmt.Println(sum)
 	return sum
 }
 
@@ -171,12 +248,118 @@ func (coins Coins) Negative() Coins {
 	return res
 }
 
-func (coinsA Coins) Minus(coinsB Coins) Coins {
-	return coinsA.Plus(coinsB.Negative())
+func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
+	sum := []Coin{}
+	//current Plus() code implicitly assumes that Coins are sorted
+	//so in same cases original code doesn't work
+	coinsA.Sort("tag")
+	coinsB.Sort("tag")
+	//
+	indexA, indexB := 0, 0
+	lenA, lenB := len(coinsA), len(coinsB)
+	if reserveFlow == 0 {
+		for {
+			if indexA == lenA {
+				if indexB == lenB {
+					return sum
+				} else {
+					return append(sum, coinsB[indexB:]...)
+				}
+			} else if indexB == lenB {
+				return append(sum, coinsA[indexA:]...)
+			}
+			coinA, coinB := coinsA[indexA], coinsB[indexB]
+			switch strings.Compare(coinA.Tag, coinB.Tag) {
+			case -1:
+				sum = append(sum, coinA)
+				indexA += 1
+			case 0:
+				if coinA.Amount+coinB.Amount == 0 {
+					// ignore 0 sum coin type
+				} else {
+					sum = append(sum, Coin{
+						Tag:    coinA.Tag,
+						Amount: coinA.Amount - coinB.Amount,
+					})
+				}
+				indexA += 1
+				indexB += 1
+			case 1:
+				sum = append(sum, coinB)
+				indexB += 1
+			}
+		}
+	} else if reserveFlow == -1 {
+		for {
+			if indexA == lenA {
+				if indexB == lenB {
+					return sum
+				} else {
+					return append(sum, coinsB[indexB:]...)
+				}
+			} else if indexB == lenB {
+				return append(sum, coinsA[indexA:]...)
+			}
+			coinA, coinB := coinsA[indexA], coinsB[indexB]
+			switch strings.Compare(coinA.Tag, "reserve") {
+			case -1:
+				sum = append(sum, coinA)
+				indexA += 1
+			case 0:
+				if coinA.Amount+coinB.Amount == 0 {
+					// ignore 0 sum coin type
+				} else {
+					sum = append(sum, Coin{
+						Tag:    coinA.Tag,
+						Amount: coinA.Amount - coinB.Amount,
+					})
+				}
+				indexA += 1
+				indexB += 1
+			case 1:
+				sum = append(sum, coinB)
+				indexB += 1
+			}
+		}
+	} else if reserveFlow == 1 {
+		for {
+			if indexA == lenA {
+				if indexB == lenB {
+					return sum
+				} else {
+					return append(sum, coinsB[indexB:]...)
+				}
+			} else if indexB == lenB {
+				return append(sum, coinsA[indexA:]...)
+			}
+			coinA, coinB := coinsA[indexA], coinsB[indexB]
+			switch strings.Compare(coinB.Tag, "xxx") {
+			case -1:
+				sum = append(sum, coinA)
+				indexA += 1
+			case 0:
+				if coinA.Amount+coinB.Amount == 0 {
+					// ignore 0 sum coin type
+				} else {
+					sum = append(sum, Coin{
+						Tag:    "xxx",
+						Amount: coinA.Amount - coinB.Amount,
+					})
+				}
+				indexA += 1
+				indexB += 1
+			case 1:
+				sum = append(sum, coinB)
+				indexB += 1
+			}
+		}
+	}
+	//fmt.Println(sum)
+	return sum
 }
 
-func (coinsA Coins) IsGTE(coinsB Coins) bool {
-	diff := coinsA.Minus(coinsB)
+func (coinsA Coins) IsGTE(coinsB Coins, reserveFlow int) bool {
+	diff := coinsA.Minus(coinsB, reserveFlow)
 	if len(diff) == 0 {
 		return true
 	}

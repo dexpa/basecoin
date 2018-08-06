@@ -220,11 +220,11 @@ func TestValidateOutputsAdvanced(t *testing.T) {
 
 	//validateOutputsBasic
 	tx := types.Accs2TxOutputs(et.accIn)
-	res := validateOutputsBasic(tx)
+	res := validateOutputsBasic(tx, true)
 	assert.True(res.IsOK(), "validateOutputsBasic: expected no error on good tx output. Error: %v", res.Error())
 
 	tx[0].Coins[0].Amount = 0
-	res = validateOutputsBasic(tx)
+	res = validateOutputsBasic(tx, true)
 	assert.True(res.IsErr(), "validateInputBasic: expected error on bad tx output. Error: %v", res.Error())
 }
 

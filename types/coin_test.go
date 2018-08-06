@@ -41,15 +41,15 @@ func TestCoins(t *testing.T) {
 		Coin{"MINERAL", 1},
 	}
 
-	assert.True(good.IsValid(), "Coins are valid")
+	assert.True(good.IsValid(true), "Coins are valid")
 	assert.True(good.IsPositive(), "Expected coins to be positive: %v", good)
 	assert.True(good.IsGTE(empty), "Expected %v to be >= %v", good, empty)
 	assert.False(neg.IsPositive(), "Expected neg coins to not be positive: %v", neg)
 	assert.Zero(len(sum), "Expected 0 coins")
-	assert.False(badSort1.IsValid(), "Coins are not sorted")
-	assert.False(badSort2.IsValid(), "Coins are not sorted")
-	assert.False(badAmt.IsValid(), "Coins cannot include 0 amounts")
-	assert.False(dup.IsValid(), "Duplicate coin")
+	assert.False(badSort1.IsValid(true), "Coins are not sorted")
+	assert.False(badSort2.IsValid(true), "Coins are not sorted")
+	assert.False(badAmt.IsValid(true), "Coins cannot include 0 amounts")
+	assert.False(dup.IsValid(true), "Duplicate coin")
 
 }
 
@@ -132,8 +132,8 @@ func TestSortCoins(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		assert.Equal(tc.before, tc.coins.IsValid())
+		assert.Equal(tc.before, tc.coins.IsValid(true))
 		tc.coins.Sort()
-		assert.Equal(tc.after, tc.coins.IsValid())
+		assert.Equal(tc.after, tc.coins.IsValid(true))
 	}
 }

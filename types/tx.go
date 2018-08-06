@@ -71,11 +71,11 @@ type TxInput struct {
 	PubKey    	crypto.PubKey    `json:"pub_key"`   // Is present iff Sequence == 0
 }
 
-func (txIn TxInput) ValidateBasic() abci.Result {
+func (txIn TxInput) ValidateBasic(checkTag bool) abci.Result {
 	if len(txIn.Address) != 20 {
 		return abci.ErrBaseInvalidInput.AppendLog("Invalid address length")
 	}
-	if !txIn.Coins.IsValid() {
+	if !txIn.Coins.IsValid(checkTag) {
 		return abci.ErrBaseInvalidInput.AppendLog(Fmt("Invalid coins %v", txIn.Coins))
 	}
 	if txIn.Coins.IsZero() {
@@ -138,13 +138,13 @@ func (txOut TxOutput) ChainAndAddress() ([]byte, []byte, abci.Result) {
 	return chainPrefix, address, abci.OK
 }
 
-func (txOut TxOutput) ValidateBasic() abci.Result {
+func (txOut TxOutput) ValidateBasic(checkTag bool) abci.Result {
 	_, _, r := txOut.ChainAndAddress()
 	if r.IsErr() {
 		return r
 	}
 
-	if !txOut.Coins.IsValid() {
+	if !txOut.Coins.IsValid(checkTag) {
 		return abci.ErrBaseInvalidOutput.AppendLog(Fmt("Invalid coins %v", txOut.Coins))
 	}
 	if txOut.Coins.IsZero() {
@@ -166,7 +166,7 @@ type SendTx struct {
 	Outputs []TxOutput `json:"outputs"`
 }
 
-func Filter(obj []TxInput, t string) []string {
+func FilterInputs(obj []TxInput, t string) []string {
 	var result []string // == nil
 	if t == "address" {
 		for _, v := range obj {
@@ -175,6 +175,17 @@ func Filter(obj []TxInput, t string) []string {
 	}
 	return result
 }
+
+func FilterOutputs(obj []TxOutput, t string) []string {
+	var result []string // == nil
+	if t == "address" {
+		for _, v := range obj {
+			result = append(result, v.Address.String())
+		}
+	}
+	return result
+}
+
 
 func (tx *SendTx) SignBytes(chainID string) []byte {
 	signBytes := wire.BinaryBytes(chainID)

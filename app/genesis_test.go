@@ -18,7 +18,7 @@ const genesisAcctFilepath = "./testdata/genesis2.json"
 
 func TestLoadGenesisDoNotFailIfAppOptionsAreMissing(t *testing.T) {
 	eyesCli := eyescli.NewLocalClient("", 0)
-	app := NewBasecoin(eyesCli)
+	app := NewBasecoin(eyesCli, false)
 	err := app.LoadGenesis("./testdata/genesis3.json")
 	require.Nil(t, err, "%+v", err)
 }
@@ -27,7 +27,7 @@ func TestLoadGenesis(t *testing.T) {
 	assert, require := assert.New(t), require.New(t)
 
 	eyesCli := eyescli.NewLocalClient("", 0)
-	app := NewBasecoin(eyesCli)
+	app := NewBasecoin(eyesCli, false)
 	err := app.LoadGenesis(genesisFilepath)
 	require.Nil(err, "%+v", err)
 
@@ -43,7 +43,7 @@ func TestLoadGenesis(t *testing.T) {
 
 	// make sure balance is proper
 	assert.Equal(2, len(acct.Balance))
-	assert.True(acct.Balance.IsValid())
+	assert.True(acct.Balance.IsValid(false))
 	// note, that we now sort them to be valid
 	assert.EqualValues(654321, acct.Balance[0].Amount)
 	assert.EqualValues("ETH", acct.Balance[0].Denom)
@@ -64,7 +64,7 @@ func TestLoadGenesisAccountAddress(t *testing.T) {
 	assert, require := assert.New(t), require.New(t)
 
 	eyesCli := eyescli.NewLocalClient("", 0)
-	app := NewBasecoin(eyesCli)
+	app := NewBasecoin(eyesCli , false)
 	err := app.LoadGenesis(genesisAcctFilepath)
 	require.Nil(err, "%+v", err)
 
@@ -97,7 +97,7 @@ func TestLoadGenesisAccountAddress(t *testing.T) {
 			assert.Nil(acct, tc.addr)
 		} else if assert.NotNil(acct, tc.addr) {
 			// it should and does exist...
-			assert.True(acct.Balance.IsValid())
+			assert.True(acct.Balance.IsValid(false))
 			assert.Equal(tc.coins, acct.Balance)
 			assert.Equal(!tc.hasPubkey, acct.PubKey.Empty(), tc.addr)
 		}

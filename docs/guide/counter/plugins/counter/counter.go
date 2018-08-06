@@ -51,7 +51,7 @@ func (cp *CounterPlugin) RunTx(store types.KVStore, ctx types.CallContext, txByt
 	if !tx.Valid {
 		return abci.ErrInternalError.AppendLog("CounterTx.Valid must be true")
 	}
-	if !tx.Fee.IsValid() {
+	if !tx.Fee.IsValid(true) {
 		return abci.ErrInternalError.AppendLog("CounterTx.Fee is not sorted or has zero amounts")
 	}
 	if !tx.Fee.IsNonnegative() {

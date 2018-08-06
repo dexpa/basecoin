@@ -86,7 +86,7 @@ func (s *SendTx) ValidateBasic() error {
 		if len(in.Address) != 20 {
 			return errors.Errorf("Invalid input address length: %d", len(in.Address))
 		}
-		if !in.Coins.IsValid() {
+		if !in.Coins.IsValid(true) {
 			return errors.Errorf("Invalid input coins %v", in.Coins)
 		}
 		if in.Coins.IsZero() {
@@ -108,7 +108,7 @@ func (s *SendTx) ValidateBasic() error {
 		if len(out.Address) < 20 {
 			return errors.Errorf("Invalid output address length: %d", len(out.Address))
 		}
-		if !out.Coins.IsValid() {
+		if !out.Coins.IsValid(true) {
 			return errors.Errorf("Invalid output coins %v", out.Coins)
 		}
 		if out.Coins.IsZero() {

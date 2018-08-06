@@ -164,7 +164,7 @@ func TestSendTxIBC(t *testing.T) {
 		for j, pc := range prefixes {
 			addr := append(pc.prefix, tc.addr...)
 			output := TxOutput{Address: addr, Coins: coins}
-			res := output.ValidateBasic()
+			res := output.ValidateBasic(true)
 
 			if tc.valid && pc.valid {
 				assert.True(res.IsOK(), "%d,%d: %s", i, j, res.Log)

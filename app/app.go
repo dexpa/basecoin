@@ -22,14 +22,15 @@ const (
 )
 
 type Basecoin struct {
-	eyesCli    *eyes.Client
-	state      *sm.State
-	cacheState *sm.State
-	plugins    *types.Plugins
-	logger     log.Logger
+	eyesCli    	*eyes.Client
+	state      	*sm.State
+	cacheState 	*sm.State
+	plugins    	*types.Plugins
+	logger     	log.Logger
+	headNode	bool
 }
 
-func NewBasecoin(eyesCli *eyes.Client) *Basecoin {
+func NewBasecoin(eyesCli *eyes.Client, isHeadNode bool) *Basecoin {
 	state := sm.NewState(eyesCli)
 	plugins := types.NewPlugins()
 	return &Basecoin{
@@ -38,6 +39,7 @@ func NewBasecoin(eyesCli *eyes.Client) *Basecoin {
 		cacheState: nil,
 		plugins:    plugins,
 		logger:     log.NewNopLogger(),
+		headNode:   isHeadNode,
 	}
 }
 
