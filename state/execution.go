@@ -40,6 +40,7 @@ func ExecTx(state *State, pgz *types.Plugins, tx types.Tx, isCheckTx bool, evc e
 		//main reserve logic flag
 		var reserveFlow = int(0)
 		reserveAddress := state.GetReserveAddress()
+
 		inputAddr:=types.FilterInputs(tx.Inputs, "address")
 		if contains(inputAddr, reserveAddress){
 			reserveFlow = -1

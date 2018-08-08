@@ -24,7 +24,7 @@ func (coin Coin) String() string {
 var reDenom = regexp.MustCompile("")
 var reAmt = regexp.MustCompile("(\\d+)")
 
-var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alpha:]]+)[[:space:]]*([[:alpha:]]*)$")
+var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alpha:]]+)[[:space:]]*([[:alnum:]]*)$")
 
 func ParseCoin(str string) (Coin, error) {
 	var coin Coin
@@ -179,7 +179,11 @@ func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 					return append(sum, coinsA[indexA:]...)
 				}
 				coinA, coinB := coinsA[indexA], coinsB[indexB]
-				switch strings.Compare("xxx", coinB.Tag) {
+				/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
+					errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
+					return []Coin{}
+				}*/
+				switch strings.Compare(coinA.Tag, coinB.Tag) {
 				case -1:
 					sum = append(sum, coinA)
 					indexA += 1
@@ -188,7 +192,7 @@ func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 						// ignore 0 sum coin type
 					} else {
 						sum = append(sum, Coin{
-							Tag:    "xxx",
+							Tag:    coinB.Tag,
 							Amount: coinA.Amount + coinB.Amount,
 						})
 					}
@@ -211,6 +215,10 @@ func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 						return append(sum, coinsA[indexA:]...)
 					}
 					coinA, coinB := coinsA[indexA], coinsB[indexB]
+					/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
+						errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
+						return []Coin{}
+					}*/
 					switch strings.Compare(coinA.Tag, "reserve") {
 					case -1:
 						sum = append(sum, coinA)
@@ -220,7 +228,7 @@ func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 							// ignore 0 sum coin type
 						} else {
 							sum = append(sum, Coin{
-								Tag:    "reserve",
+								Tag:    coinA.Tag,
 								Amount: coinA.Amount + coinB.Amount,
 							})
 						}
@@ -271,10 +279,13 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 			coinA, coinB := coinsA[indexA], coinsB[indexB]
 			switch strings.Compare(coinA.Tag, coinB.Tag) {
 			case -1:
-				sum = append(sum, coinA)
+				sum = append(sum, Coin{
+					Tag:    coinA.Tag,
+					Amount: coinA.Amount,
+				})
 				indexA += 1
 			case 0:
-				if coinA.Amount+coinB.Amount == 0 {
+				if coinA.Amount-coinB.Amount == 0 {
 					// ignore 0 sum coin type
 				} else {
 					sum = append(sum, Coin{
@@ -285,7 +296,10 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 				indexA += 1
 				indexB += 1
 			case 1:
-				sum = append(sum, coinB)
+				sum = append(sum, Coin{
+					Tag:    coinB.Tag,
+					Amount: -coinB.Amount,
+				})
 				indexB += 1
 			}
 		}
@@ -301,12 +315,19 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 				return append(sum, coinsA[indexA:]...)
 			}
 			coinA, coinB := coinsA[indexA], coinsB[indexB]
+			/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
+				errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
+				return []Coin{}
+			}*/
 			switch strings.Compare(coinA.Tag, "reserve") {
 			case -1:
-				sum = append(sum, coinA)
+				sum = append(sum, Coin{
+					Tag:    coinA.Tag,
+					Amount: coinA.Amount,
+				})
 				indexA += 1
 			case 0:
-				if coinA.Amount+coinB.Amount == 0 {
+				if coinA.Amount-coinB.Amount == 0 {
 					// ignore 0 sum coin type
 				} else {
 					sum = append(sum, Coin{
@@ -317,7 +338,10 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 				indexA += 1
 				indexB += 1
 			case 1:
-				sum = append(sum, coinB)
+				sum = append(sum, Coin{
+					Tag:    coinB.Tag,
+					Amount: -coinB.Amount,
+				})
 				indexB += 1
 			}
 		}
@@ -333,23 +357,33 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 				return append(sum, coinsA[indexA:]...)
 			}
 			coinA, coinB := coinsA[indexA], coinsB[indexB]
-			switch strings.Compare(coinB.Tag, "xxx") {
+			/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
+				errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
+				return []Coin{}
+			}*/
+			switch strings.Compare(coinA.Tag, coinB.Tag) {
 			case -1:
-				sum = append(sum, coinA)
+				sum = append(sum, Coin{
+					Tag:    coinA.Tag,
+					Amount: coinA.Amount,
+				})
 				indexA += 1
 			case 0:
-				if coinA.Amount+coinB.Amount == 0 {
+				if coinA.Amount-coinB.Amount == 0 {
 					// ignore 0 sum coin type
 				} else {
 					sum = append(sum, Coin{
-						Tag:    "xxx",
+						Tag:    coinA.Tag,
 						Amount: coinA.Amount - coinB.Amount,
 					})
 				}
 				indexA += 1
 				indexB += 1
 			case 1:
-				sum = append(sum, coinB)
+				sum = append(sum, Coin{
+					Tag:    coinB.Tag,
+					Amount: -coinB.Amount,
+				})
 				indexB += 1
 			}
 		}

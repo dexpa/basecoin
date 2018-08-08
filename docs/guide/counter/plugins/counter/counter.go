@@ -59,7 +59,7 @@ func (cp *CounterPlugin) RunTx(store types.KVStore, ctx types.CallContext, txByt
 	}
 
 	// Did the caller provide enough coins?
-	if !ctx.Coins.IsGTE(tx.Fee) {
+	if !ctx.Coins.IsGTE(tx.Fee,0) {
 		return abci.ErrInsufficientFunds.AppendLog("CounterTx.Fee was not provided")
 	}
 
@@ -79,7 +79,7 @@ func (cp *CounterPlugin) RunTx(store types.KVStore, ctx types.CallContext, txByt
 
 	// Update CounterPluginState
 	cpState.Counter += 1
-	cpState.TotalFees = cpState.TotalFees.Plus(tx.Fee)
+	cpState.TotalFees = cpState.TotalFees.Plus(tx.Fee,0)
 
 	// Save CounterPluginState
 	store.Set(cp.StateKey(), wire.BinaryBytes(cpState))

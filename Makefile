@@ -6,10 +6,14 @@ TUTORIALS=$(shell find docs/guide -name "*md" -type f)
 all: get_vendor_deps install test
 
 build:
-	go build ./cmd/...
+	go build ./cmd/basecli
+	go build -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true -o basecli-reserve' ./cmd/basecli
+	go build ./cmd/basecoin
 
 install:
-	go install ./cmd/...
+	go install ./cmd/basecli
+	go install -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true -o basecli-reserve' ./cmd/basecli
+	go install ./cmd/basecoin
 	go install ./docs/guide/counter/cmd/...
 
 dist:

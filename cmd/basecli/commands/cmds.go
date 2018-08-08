@@ -3,19 +3,18 @@ package commands
 import (
 	"encoding/hex"
 	"strings"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"crypto/sha1"
 
 	"github.com/tendermint/light-client/commands"
+
 	txcmd "github.com/tendermint/light-client/commands/txs"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	cmn "github.com/tendermint/tmlibs/common"
-
 	btypes "github.com/dexpa/basecoin/types"
-	"fmt"
 )
 
 //-------------------------
@@ -27,6 +26,8 @@ var SendTxCmd = &cobra.Command{
 	Short: "send tokens from one account to another",
 	RunE:  commands.RequireInit(doSendTx),
 }
+
+var HeadNode = "false"
 
 //nolint
 const (
@@ -68,16 +69,16 @@ func doSendTx(cmd *cobra.Command, args []string) error {
 	}
 	send.AddSigner(txcmd.GetSigner())
 
-	var headNode = false
-	if headNode {
+	if HeadNode == "true" {
 		for i := range send.Tx.Outputs{
 			for j := range send.Tx.Outputs[i].Coins {
-				send.Tx.Outputs[i].Coins[j].Tag = "xxx"
-				fmt.Println("changing tag")
-			}
+				hash := sha1.New()
+				hash.Write(send.Tx.Outputs[i].Address.Bytes())
+				send.Tx.Outputs[i].Coins[j].Tag = hex.EncodeToString(hash.Sum(nil)[:3])
+				}
 		}
-		fmt.Println("changed tag")
-		fmt.Println(send.Tx.Outputs[0].Coins[0].Tag)
+		//fmt.Println("changed tag")
+		//fmt.Println(send.Tx.Outputs[0].Coins[0].Tag)
 	}
 
 	// Sign if needed and post.  This it the work-horse
