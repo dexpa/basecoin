@@ -6,15 +6,14 @@ TUTORIALS=$(shell find docs/guide -name "*md" -type f)
 all: get_vendor_deps install test
 
 build:
-	go build ./cmd/basecli
-	go build -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true -o basecli-reserve' ./cmd/basecli
 	go build ./cmd/basecoin
+	go build ./cmd/basecli
+	go build -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true' -o baseclir ./cmd/basecli
 
 install:
-	go install ./cmd/basecli
-	go install -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true -o basecli-reserve' ./cmd/basecli
 	go install ./cmd/basecoin
-	go install ./docs/guide/counter/cmd/...
+	go install ./cmd/basecli
+	go install -ldflags '-X github.com/dexpa/basecoin/cmd/basecli/commands.HeadNode=true -o baseclir' ./cmd/basecli
 
 dist:
 	@bash scripts/dist.sh
@@ -29,9 +28,7 @@ test_unit:
 test_cli: tests/cli/shunit2
 	# sudo apt-get install jq
 	@./tests/cli/basictx.sh
-	@./tests/cli/counter.sh
 	@./tests/cli/restart.sh
-	@./tests/cli/ibc.sh
 
 get_vendor_deps: tools
 	glide install
@@ -49,7 +46,7 @@ clean:
 	# you don't get the most recent versions with lots of branches, changes, rebases...
 	@rm -rf ~/.glide/cache/src/https-github.com-tendermint-*
 	@rm -rf ./vendor
-	@rm -f $GOPATH/bin/{basecoin,basecli,counter,countercli}
+	@rm -f $GOPATH/bin/{basecoin,basecli,baseclir,counter,countercli}
 
 # when your repo is getting a little stale... just make fresh
 fresh: clean get_vendor_deps install
