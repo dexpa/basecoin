@@ -31,8 +31,8 @@ printf "Sum $((AMT0+AMT1+AMT2+AMT1_2+AMT2_2))\n"
 
 echo "Step one -- sending using RESERVE CLIENT"
 
-(./baseclir tx send --name=${RESERVE} --amount="1000CLR x" --to=${TEST1_ADDR} --sequence=$((SEQR+1))) < passphrase.dat 
-(./baseclir tx send --name=${RESERVE} --amount="1000CLR x" --to=${TEST2_ADDR} --sequence=$((SEQR+2))) < passphrase.dat 
+(./baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST1_ADDR} --sequence=$((SEQR+1))) < passphrase.dat 
+(./baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST2_ADDR} --sequence=$((SEQR+2))) < passphrase.dat 
 
 AMT0=$(./basecli query account ${RESER_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')
 AMT1=$(./basecli query account ${TEST1_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')
@@ -49,8 +49,8 @@ printf "Reserve ${AMT0},\n\tTest1 ${AMT1} ${TAG1}, ${AMT1_2} ${TAG1_2},\n\tTest2
 printf "Sum $((AMT0+AMT1+AMT2+AMT1_2+AMT2_2))\n"
 
 echo "Step two"
-(./basecli tx send --name=${TEST1} --amount="100CLR 7d33ac" --to=${TEST2_ADDR} --sequence=$((SEQT1+1))) < passphrase.dat 
-(./basecli tx send --name=${TEST2} --amount="100CLR 58e45a" --to=${TEST1_ADDR} --sequence=$((SEQT2+1))) < passphrase.dat 
+(./basecli tx send --name=${TEST1} --amount="100 7d33ac" --to=${TEST2_ADDR} --sequence=$((SEQT1+1))) < passphrase.dat 
+(./basecli tx send --name=${TEST2} --amount="100 58e45a" --to=${TEST1_ADDR} --sequence=$((SEQT2+1))) < passphrase.dat 
 
 AMT0=$(./basecli query account ${RESER_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')
 AMT1=$(./basecli query account ${TEST1_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')
@@ -68,8 +68,8 @@ printf "Sum $((AMT0+AMT1+AMT2+AMT1_2+AMT2_2))\n"
 
 echo "Step three"
 
-(./basecli tx send --name=${TEST1} --amount="100CLR 58e45a" --to=${RESER_ADDR} --sequence=$((SEQT1+2))) < passphrase.dat 
-(./basecli tx send --name=${TEST2} --amount="100CLR 7d33ac" --to=${RESER_ADDR} --sequence=$((SEQT2+2))) < passphrase.dat 
+(./basecli tx send --name=${TEST1} --amount="100 58e45a, 100 7d33ac" --to=${RESER_ADDR} --sequence=$((SEQT1+2))) < passphrase.dat 
+(./basecli tx send --name=${TEST2} --amount="100 7d33ac, 100 58e45a" --to=${RESER_ADDR} --sequence=$((SEQT2+2))) < passphrase.dat 
 
 
 AMT0=$(./basecli query account ${RESER_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')

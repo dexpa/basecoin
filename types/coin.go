@@ -11,20 +11,19 @@ import (
 )
 
 type Coin struct {
-	Denom  	string `json:"denom"`
 	Amount 	int64  `json:"amount"`
 	Tag		string `json:"tag"`
 }
 
 func (coin Coin) String() string {
-	return fmt.Sprintf("%v%v %v",coin.Amount, coin.Denom, coin.Tag)
+	return fmt.Sprintf("%v %v",coin.Amount, coin.Tag)
 }
 
 //regex codes for extracting coins from string
 var reDenom = regexp.MustCompile("")
 var reAmt = regexp.MustCompile("(\\d+)")
 
-var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alpha:]]+)[[:space:]]*([[:alnum:]]*)$")
+var reCoin = regexp.MustCompile("^([[:digit:]]+)[[:space:]]*([[:alnum:]]*)$")
 
 func ParseCoin(str string) (Coin, error) {
 	var coin Coin
@@ -39,10 +38,10 @@ func ParseCoin(str string) (Coin, error) {
 	if err != nil {
 		return coin, err
 	}
-	if len(matches[3])>0 {
-		coin = Coin{matches[2], int64(amt), matches[3]}
+	if len(matches[2])>0 {
+		coin = Coin{int64(amt), matches[2]}
 	} else {
-		coin = Coin{matches[2], int64(amt), ""}
+		coin = Coin{int64(amt), ""}
 	}
 
 	return coin, nil
@@ -106,9 +105,9 @@ func (coins Coins) IsValid(checkTag bool) bool {
 			return false
 		}
 	default:
-		lowDenom := coins[0].Denom
+		lowDenom := coins[0].Tag
 		for _, coin := range coins[1:] {
-			if coin.Denom <= lowDenom {
+			if coin.Tag <= lowDenom {
 				return false
 			}
 			if coin.Amount == 0 {
@@ -118,7 +117,7 @@ func (coins Coins) IsValid(checkTag bool) bool {
 				return false
 			}
 			// we compare each coin against the last denom
-			lowDenom = coin.Denom
+			lowDenom = coin.Tag
 		}
 		return true
 	}
@@ -209,35 +208,26 @@ func (coinsA Coins) Plus(coinsB Coins, reserveFlow int) Coins {
 						if indexB == lenB {
 							return sum
 						} else {
-							return append(sum, coinsB[indexB:]...)
+							return sum
 						}
 					} else if indexB == lenB {
-						return append(sum, coinsA[indexA:]...)
+						return sum
 					}
 					coinA, coinB := coinsA[indexA], coinsB[indexB]
-					/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
-						errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
-						return []Coin{}
-					}*/
-					switch strings.Compare(coinA.Tag, "reserve") {
-					case -1:
-						sum = append(sum, coinA)
-						indexA += 1
-					case 0:
-						if coinA.Amount+coinB.Amount == 0 {
-							// ignore 0 sum coin type
+					//the single part that works because we putting coins to reserve
+					if coinA.Amount+coinB.Amount == 0 {
+						// ignore 0 sum coin type
+					} else {
+						if len(sum)>0{
+							sum[0].Amount = sum[0].Amount + coinB.Amount
 						} else {
 							sum = append(sum, Coin{
 								Tag:    coinA.Tag,
 								Amount: coinA.Amount + coinB.Amount,
 							})
 						}
-						indexA += 1
-						indexB += 1
-					case 1:
-						sum = append(sum, coinB)
-						indexB += 1
 					}
+					indexB += 1
 				}
 		}
 	//fmt.Println(sum)
@@ -248,7 +238,6 @@ func (coins Coins) Negative() Coins {
 	res := make([]Coin, 0, len(coins))
 	for _, coin := range coins {
 		res = append(res, Coin{
-			Denom: coin.Denom,
 			Amount: -coin.Amount,
 			Tag:  coin.Tag,
 		})
@@ -309,41 +298,29 @@ func (coinsA Coins) Minus(coinsB Coins, reserveFlow int) Coins {
 				if indexB == lenB {
 					return sum
 				} else {
-					return append(sum, coinsB[indexB:]...)
+					return sum
 				}
 			} else if indexB == lenB {
-				return append(sum, coinsA[indexA:]...)
+				return sum
 			}
 			coinA, coinB := coinsA[indexA], coinsB[indexB]
 			/*if coinA.Tag != "reserve" && coinB.Tag != "reserve" {
 				errors.Errorf("Reserve coin arithmetic among non-reserve coins %s, %s", coinA.Tag, coinB.Tag)
 				return []Coin{}
 			}*/
-			switch strings.Compare(coinA.Tag, "reserve") {
-			case -1:
-				sum = append(sum, Coin{
-					Tag:    coinA.Tag,
-					Amount: coinA.Amount,
-				})
-				indexA += 1
-			case 0:
-				if coinA.Amount-coinB.Amount == 0 {
-					// ignore 0 sum coin type
+			if coinA.Amount-coinB.Amount == 0 {
+				// ignore 0 sum coin type
+			} else {
+				if len(sum)>0{
+					sum[0].Amount = sum[0].Amount - coinB.Amount
 				} else {
 					sum = append(sum, Coin{
 						Tag:    coinA.Tag,
 						Amount: coinA.Amount - coinB.Amount,
 					})
 				}
-				indexA += 1
-				indexB += 1
-			case 1:
-				sum = append(sum, Coin{
-					Tag:    coinB.Tag,
-					Amount: -coinB.Amount,
-				})
-				indexB += 1
 			}
+			indexB += 1
 		}
 	} else if reserveFlow == 1 {
 		for {
@@ -443,7 +420,7 @@ func (coins Coins) IsNonnegative() bool {
 /*** Implement Sort interface ***/
 
 func (c Coins) Len() int           { return len(c) }
-func (c Coins) Less(i, j int) bool { return c[i].Denom < c[j].Denom }
+func (c Coins) Less(i, j int) bool { return c[i].Tag < c[j].Tag }
 func (c Coins) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
 
 func (c Coins) Sort(t string) {
