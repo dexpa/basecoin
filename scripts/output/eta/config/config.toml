@@ -1,0 +1,58 @@
+# This is a TOML config file.
+# For more information, see https://github.com/toml-lang/toml
+
+#proxy_app = "tcp://127.0.0.1:46658"
+
+moniker = "eta"
+fast_sync = true
+db_backend = "leveldb"
+log_level = "state:info,*:error"
+
+[rpc]
+laddr = "tcp://0.0.0.0:30001"
+
+[p2p]
+laddr = "tcp://0.0.0.0:30000"
+seeds = "165.227.144.195:30000,159.65.114.104:30000,159.89.171.9:30000,209.97.164.13:30000"
+
+[mempool]
+
+recheck = true
+recheck_empty = true
+broadcast = true
+wal_dir = "data/mempool.wal"
+
+# size of the mempool
+size = 100000
+
+# size of the cache (used to filter transactions we saw earlier)
+cache_size = 100000
+
+##### consensus configuration options #####
+[consensus]
+
+wal_file = "data/cs.wal/wal"
+
+# All timeouts are in milliseconds
+timeout_propose = 45000 #30000
+timeout_propose_delta = 7500 #5000
+timeout_prevote = 15000 #10000
+timeout_prevote_delta = 7500 #5000
+timeout_precommit = 15000 #10000
+timeout_precommit_delta = 7500 #5000
+timeout_commit = 15000 #10000
+
+# Make progress as soon as we have all the precommits (as if TimeoutCommit = 0)
+skip_timeout_commit = false
+
+# BlockSize
+max_block_size_txs = 10000
+max_block_size_bytes = 1
+
+# EmptyBlocks mode and possible interval between empty blocks in seconds
+create_empty_blocks = true
+create_empty_blocks_interval = 0
+
+# Reactor sleep duration parameters are in milliseconds
+peer_gossip_sleep_duration = 100
+peer_query_maj23_sleep_duration = 2000
