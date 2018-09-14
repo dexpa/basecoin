@@ -2,7 +2,7 @@
 
 basecoinDir="/root"
 
-chainID="f652e0ef7c149544"
+chainID="d99523f1b30a98be"
 p2pPort=30000
 rpcPort=30001
 

@@ -10,6 +10,10 @@ TEST1_ADDR=$(basecli keys get ${TEST1}  | awk '{print $2}')
 TEST2_ADDR=$(basecli keys get ${TEST2} | awk '{print $2}')
 
 SEQR=$(basecli query account ${RESER_ADDR} |  jq -r '.data' | jq -r '.sequence')
+
+(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST1_ADDR} --sequence=$((SEQR+1))) < passphrase.dat 
+(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST2_ADDR} --sequence=$((SEQR+2))) < passphrase.dat 
+
 SEQT1=$(basecli query account ${TEST1_ADDR} |  jq -r '.data' | jq -r '.sequence')
 SEQT2=$(basecli query account ${TEST2_ADDR} |  jq -r '.data' | jq -r '.sequence')
 
@@ -31,8 +35,8 @@ printf "Sum $((AMT0+AMT1+AMT2+AMT1_2+AMT2_2))\n"
 
 echo "Step one -- sending using RESERVE CLIENT"
 
-(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST1_ADDR} --sequence=$((SEQR+1))) < passphrase.dat 
-(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST2_ADDR} --sequence=$((SEQR+2))) < passphrase.dat 
+(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST1_ADDR} --sequence=$((SEQR+3))) < passphrase.dat 
+(baseclir tx send --name=${RESERVE} --amount="1000 x" --to=${TEST2_ADDR} --sequence=$((SEQR+4))) < passphrase.dat 
 
 AMT0=$(basecli query account ${RESER_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')
 AMT1=$(basecli query account ${TEST1_ADDR} | jq -r '.data' | jq -r '.coins' | jq -r '.[0].amount')

@@ -34,13 +34,13 @@ cache_size = 100000
 wal_file = "data/cs.wal/wal"
 
 # All timeouts are in milliseconds
-timeout_propose = 45000 #30000
-timeout_propose_delta = 7500 #5000
-timeout_prevote = 15000 #10000
-timeout_prevote_delta = 7500 #5000
-timeout_precommit = 15000 #10000
-timeout_precommit_delta = 7500 #5000
-timeout_commit = 15000 #10000
+timeout_propose = 20000 #45000 #30000
+timeout_propose_delta = 2500 #7500 #5000
+timeout_prevote = 5000 #15000 #10000
+timeout_prevote_delta = 2500 #7500 #5000
+timeout_precommit = 5000 #15000 #10000
+timeout_precommit_delta = 2500 #7500 #5000
+timeout_commit = 5000 #15000 #10000
 
 # Make progress as soon as we have all the precommits (as if TimeoutCommit = 0)
 skip_timeout_commit = false
@@ -50,7 +50,7 @@ max_block_size_txs = 10000
 max_block_size_bytes = 1
 
 # EmptyBlocks mode and possible interval between empty blocks in seconds
-create_empty_blocks = true
+create_empty_blocks = false #true
 create_empty_blocks_interval = 0
 
 # Reactor sleep duration parameters are in milliseconds
