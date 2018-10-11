@@ -6,14 +6,15 @@ import (
 	"strings"
 
 	abci "github.com/tendermint/abci/types"
-	wire "github.com/tendermint/go-wire"
-	eyes "github.com/tendermint/merkleeyes/client"
+	"github.com/tendermint/go-wire"
+	"github.com/tendermint/merkleeyes/client"
 	cmn "github.com/tendermint/tmlibs/common"
 	"github.com/tendermint/tmlibs/log"
 
 	sm "github.com/dexpa/basecoin/state"
 	"github.com/dexpa/basecoin/types"
 	"github.com/dexpa/basecoin/version"
+	"github.com/tendermint/light-client/proofs"
 )
 
 const (
@@ -28,6 +29,7 @@ type Basecoin struct {
 	plugins    	*types.Plugins
 	logger     	log.Logger
 	headNode	bool
+	lastBlock   uint64
 }
 
 func NewBasecoin(eyesCli *eyes.Client, isHeadNode bool) *Basecoin {
@@ -164,14 +166,32 @@ func (app *Basecoin) Query(reqQuery abci.RequestQuery) (resQuery abci.ResponseQu
 		resQuery.Code = abci.CodeType_EncodingError
 		return
 	}
-
+	var err error
 	// handle special path for account info
 	if reqQuery.Path == "/account" {
 		reqQuery.Path = "/key"
-		reqQuery.Data = types.AccountKey(reqQuery.Data)
+		strAddress := string(reqQuery.Data)
+		var kMaker proofs.KeyMaker
+		reqQuery.Data, err = kMaker.MakeKey(strAddress)
+		if err != nil {
+			resQuery.Log = "Failed to convert account address to bytes: " + err.Error()
+			resQuery.Code = abci.CodeType_InternalError
+			return
+		}
+		//Old code reassigns key and pass further
+		//reqQuery.Data = types.AccountKey(reqQuery.Data)
+		//new stuff. reqQuery insn't passed further
+		acc := types.GetAccount(app.state, reqQuery.Data)
+		if acc != nil {
+			resQuery.Height = app.lastBlock
+			resQuery.Key = reqQuery.Data
+			resQuery.Value = []byte(acc.String())
+			resQuery.Log = "Success"
+			resQuery.Code = abci.CodeType_OK
+			return
+		}
 	}
-
-	resQuery, err := app.eyesCli.QuerySync(reqQuery)
+	resQuery, err = app.eyesCli.QuerySync(reqQuery)
 	if err != nil {
 		resQuery.Log = "Failed to query MerkleEyes: " + err.Error()
 		resQuery.Code = abci.CodeType_InternalError
@@ -215,6 +235,7 @@ func (app *Basecoin) EndBlock(height uint64) (res abci.ResponseEndBlock) {
 		pluginRes := plugin.EndBlock(app.state, height)
 		res.Diffs = append(res.Diffs, pluginRes.Diffs...)
 	}
+	app.lastBlock = height
 	return
 }
 

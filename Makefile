@@ -36,7 +36,7 @@ get_vendor_deps: tools
 build-docker:
 	docker run -it --rm -v "$(PWD):/go/src/github.com/dexpa/basecoin" -w \
 		"/go/src/github.com/dexpa/basecoin" -e "CGO_ENABLED=0" golang:alpine go build ./cmd/basecoin
-	docker build -t "dexpa/basecoin" .
+	docker build -t "ievdokimov/basecoin" .
 
 tools:
 	@go get $(GOTOOLS)
@@ -44,7 +44,7 @@ tools:
 clean:
 	# maybe cleaning up cache and vendor is overkill, but sometimes
 	# you don't get the most recent versions with lots of branches, changes, rebases...
-	@rm -rf ~/.glide/cache/src/https-github.com-tendermint-*
+	@rm -rf ~/.glide/cache/src/https-github.com-dexpa-*
 	@rm -rf ./vendor
 	@rm -f $GOPATH/bin/{basecoin,basecli,baseclir,counter,countercli}
 

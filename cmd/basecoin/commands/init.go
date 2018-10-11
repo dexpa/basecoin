@@ -135,9 +135,8 @@ func GetGenesisJSON(chainID, addr string) string {
       "address": "%s",
       "coins": [
         {
-          "denom": "CLR",
-          "amount": 9007199254740992,
-          "tag":	"grey"
+			"amount": 10000000000000000,
+	      	"tag": "reserve"
         }
       ]
     }]

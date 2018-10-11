@@ -7,6 +7,7 @@ import (
 
 	"github.com/dexpa/basecoin/plugins/ibc"
 	"github.com/dexpa/basecoin/types"
+	"fmt"
 )
 
 func contains(slice []string, item string) bool {
@@ -196,19 +197,20 @@ func getInputs(state types.AccountGetter, ins []types.TxInput) (map[string]*type
 	accounts := map[string]*types.Account{}
 	for _, in := range ins {
 		// Account shouldn't be duplicated
-		if _, ok := accounts[string(in.Address)]; ok {
+		if _, ok := accounts[in.Address.String()]; ok {
 			return nil, abci.ErrBaseDuplicateAddress
 		}
 
 		acc := state.GetAccount(in.Address)
 		if acc == nil {
+			fmt.Println("getInputs: unknown address ", in.Address.String())
 			return nil, abci.ErrBaseUnknownAddress
 		}
 
 		if !in.PubKey.Empty() {
 			acc.PubKey = in.PubKey
 		}
-		accounts[string(in.Address)] = acc
+		accounts[in.Address.String()] = acc
 	}
 	return accounts, abci.OK
 }
@@ -219,23 +221,23 @@ func getOrMakeOutputs(state types.AccountGetter, accounts map[string]*types.Acco
 	}
 
 	for _, out := range outs {
-		chain, outAddress, _ := out.ChainAndAddress() // already validated
+		chain, _, _ := out.ChainAndAddress() // already validated
 		if chain != nil {
 			// we dont need an account for the other chain.
 			// we'll just create an outgoing ibc packet
 			continue
 		}
 		// Account shouldn't be duplicated
-		if _, ok := accounts[string(outAddress)]; ok {
+		if _, ok := accounts[out.Address.String()]; ok {
 			return nil, abci.ErrBaseDuplicateAddress
 		}
-		acc := state.GetAccount(outAddress)
+		acc := state.GetAccount(out.Address)
 		// output account may be nil (new)
 		if acc == nil {
 			// zero value is valid, empty account
 			acc = &types.Account{}
 		}
-		accounts[string(outAddress)] = acc
+		accounts[out.Address.String()] = acc
 	}
 	return accounts, abci.OK
 }
@@ -254,7 +256,7 @@ func validateInputsBasic(ins []types.TxInput, checkTag bool) (res abci.Result) {
 // Validate inputs and compute total amount of coins
 func validateInputsAdvanced(accounts map[string]*types.Account, signBytes []byte, ins []types.TxInput, reserveFlow int) (total types.Coins, res abci.Result) {
 	for _, in := range ins {
-		acc := accounts[string(in.Address)]
+		acc := accounts[in.Address.String()]
 		if acc == nil {
 			cmn.PanicSanity("validateInputsAdvanced() expects account in accounts")
 		}
@@ -304,7 +306,7 @@ func sumOutputs(outs []types.TxOutput, reserveFlow int) (total types.Coins) {
 
 func adjustByInputs(state types.AccountSetter, accounts map[string]*types.Account, ins []types.TxInput, reserveFlow int) {
 	for _, in := range ins {
-		acc := accounts[string(in.Address)]
+		acc := accounts[in.Address.String()]
 		if acc == nil {
 			cmn.PanicSanity("adjustByInputs() expects account in accounts")
 		}
@@ -326,13 +328,13 @@ func adjustByOutputs(state *State, accounts map[string]*types.Account, outs []ty
 			continue
 		}
 
-		acc := accounts[string(outAddress)]
+		acc := accounts[out.Address.String()]
 		if acc == nil {
 			cmn.PanicSanity("adjustByOutputs() expects account in accounts")
 		}
 		acc.Balance = acc.Balance.Plus(out.Coins, reserveFlow)
 		if !isCheckTx {
-			state.SetAccount(outAddress, acc)
+			state.SetAccount(out.Address, acc)
 		}
 	}
 }

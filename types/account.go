@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-
 	"github.com/tendermint/go-crypto"
 	"github.com/tendermint/go-wire"
 )
@@ -52,6 +51,8 @@ type AccountGetterSetter interface {
 }
 
 func AccountKey(addr []byte) []byte {
+	//strAddress := strings.ToLower(hex.EncodeToString(addr))
+	//key := fmt.Sprintf("base/a/%s", strAddress)
 	return append([]byte("base/a/"), addr...)
 }
 

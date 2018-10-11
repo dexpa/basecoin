@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dexpa/basecoin/types"
-	crypto "github.com/tendermint/go-crypto"
+	"github.com/tendermint/go-crypto"
 	"github.com/tendermint/go-wire/data"
 	cmn "github.com/tendermint/tmlibs/common"
 )
@@ -68,6 +68,7 @@ func loadGenesis(filePath string) (*FullGenesisDoc, error) {
 
 	// the basecoin genesis go-wire/data :)
 	genDoc := new(FullGenesisDoc)
+
 	err = json.Unmarshal(bytes, genDoc)
 	if err != nil {
 		return nil, errors.Wrap(err, "unmarshaling genesis file")

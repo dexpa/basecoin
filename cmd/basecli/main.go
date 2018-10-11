@@ -40,6 +40,10 @@ func main() {
 	pr.AddCommand(proofs.KeyCmd)
 	pr.AddCommand(bcmd.AccountQueryCmd)
 
+	//additional rpc commands
+	rpc := rpccmd.RootCmd
+	rpc.AddCommand(bcmd.AccountSubscribeCmd)
+
 	// you will always want this for the base send command
 	proofs.TxPresenters.Register("base", bcmd.BaseTxPresenter{})
 	tr := txs.RootCmd
@@ -51,7 +55,7 @@ func main() {
 		commands.ResetCmd,
 		keycmd.RootCmd,
 		seeds.RootCmd,
-		rpccmd.RootCmd,
+		rpc,
 		pr,
 		tr,
 		proxy.RootCmd,
