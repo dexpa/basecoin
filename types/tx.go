@@ -18,6 +18,7 @@ Account Types:
  - SendTx         Send coins to address
  - AppTx         Send a msg to a contract that runs in the vm
 */
+
 type Tx interface {
 	AssertIsTx()
 	SignBytes(chainID string) []byte
@@ -259,4 +260,18 @@ func jsonEscape(str string) string {
 		PanicSanity(Fmt("Error json-escaping a string", str))
 	}
 	return string(escapedBytes)
+}
+
+// LoadTx parses a tx from data
+// Copy-paste code
+const maxTxSize = 10240
+
+func LoadTx(bin []byte) (tx Tx, err error) {
+	if len(bin) > maxTxSize {
+		return nil, err
+	}
+
+	// Decode tx
+	err = data.FromWire(bin, &tx)
+	return tx, err
 }

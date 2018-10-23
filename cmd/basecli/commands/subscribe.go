@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/spf13/cobra"
 
+	lc "github.com/tendermint/light-client"
 	lcmd "github.com/tendermint/light-client/commands"
 	"fmt"
 	"github.com/tendermint/tendermint/rpc/client"
@@ -47,6 +48,14 @@ func createAccountSubscribtion(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	h := status.LatestBlockHeight
+
+	client.WaitForHeight(c, h + 1, nil)
+	commit, err := c.Commit(h)
+	result := lc.CheckpointFromResult(commit)
+	fmt.Println(result.Header)
+	fmt.Println(commit)
+	fmt.Println(commit.Header)
+	/*
 	fmt.Printf("Started subscription at %d", h)
 	waiter := client.DefaultWaitStrategy
 	delta := 1
@@ -64,6 +73,6 @@ func createAccountSubscribtion(cmd *cobra.Command, args []string) error {
 		h = last
 		fmt.Printf("Chain now at height %d\n", h)
 	}
-
+	*/
 	return nil
 }
